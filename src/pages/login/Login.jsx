@@ -1,7 +1,24 @@
+import { useState } from "react";
 import "./login.scss";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
-  return <div className="login">Login</div>;
+  const [error, setError] = useState(false);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+  };
+
+  return (
+    <div className="login">
+      <form onSubmit={handleLogin}>
+        <input type="email" placeholder="email" />
+        <input type="password" placeholder="password" />
+        <button type="submit">Login</button>
+        {error && <span>Wrong email or password!</span>}
+      </form>
+    </div>
+  );
 };
 
 export default Login;
