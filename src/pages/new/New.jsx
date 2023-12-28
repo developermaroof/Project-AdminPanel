@@ -3,9 +3,44 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useState } from "react";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
+import { auth, db } from "../../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const New = ({ inputs, title }) => {
   const [file, setFile] = useState("");
+  const [data, setData] = useState({});
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+      await setDoc(doc(db, "users", res.user.uid), {
+        ...data,
+        timeStamp: serverTimestamp(),
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleInput = (e) => {
+    const id = e.target.id;
+    const value = e.target.value;
+
+    setData({ ...data, [id]: value });
+  };
+  console.log(data);
 
   return (
     <div className="new">
@@ -27,7 +62,7 @@ const New = ({ inputs, title }) => {
             />
           </div>
           <div className="right">
-            <form>
+            <form onSubmit={handleAdd}>
               <div className="formInput">
                 <label htmlFor="file">
                   Image: <DriveFolderUploadOutlinedIcon className="icon" />
@@ -43,10 +78,15 @@ const New = ({ inputs, title }) => {
               {inputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
-                  <input type={input.type} placeholder={input.placeholder} />
+                  <input
+                    id={input.id}
+                    type={input.type}
+                    placeholder={input.placeholder}
+                    onChange={handleInput}
+                  />
                 </div>
               ))}
-              <button>Send</button>
+              <button type="submit">Send</button>
             </form>
           </div>
         </div>
