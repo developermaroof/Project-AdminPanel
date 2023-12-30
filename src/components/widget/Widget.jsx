@@ -96,8 +96,8 @@ const Widget = ({ type }) => {
         where("timeStamp", ">", prevMonth)
       );
 
-      const lastMonthData = await getDocs(lastMonthData);
-      const prevMonthData = await getDocs(prevMonthData);
+      const lastMonthData = await getDocs(lastMonthQuery);
+      const prevMonthData = await getDocs(prevMonthQuery);
 
       setAmount(lastMonthData.docs.length);
     };
